@@ -4,6 +4,6 @@ module ApplicationHelper
   end
 
   def fix_date(date)
-    date.strftime("%l:%M%P on %-m/%d/%Y")
+    date.strftime("%l:%M%P %Z on %-m/%d/%Y")
   end
 end

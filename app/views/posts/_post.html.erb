@@ -1,10 +1,23 @@
 <div class='row'>
+  <div class='span0 well text-center'>
+    <% if logged_in? %>
+      <%= link_to vote_post_path(post, vote: true), method: "post" do %>
+        <i class='icon-arrow-up'></i>
+      <% end %>
+    <% end %>
+    <p><%= post.vote_total == -1 ? "-1 Vote" : pluralize(post.vote_total, "Vote") %></p>
+    <% if logged_in? %>
+      <%= link_to vote_post_path(post, vote: false), method: "post" do %>
+        <i class='icon-arrow-down'></i>
+      <% end %>
+    <% end %>
+  </div>
   <div class='span8 well'>
     <%= render post.categories %>
     <h4><%= link_to post.title, fix_url(post.url) %></h4>
     <p><%= post.description %></p>
     <p>
-      <span class='quiet'>posted by </span><%= post.user.username %>
+      <span class='quiet'>posted by </span><%= link_to post.user.username, user_path(post.user) %>
       <small> at <%= fix_date(post.created_at) %></small>
     </p>
     <small><%= link_to "#{post.comments.size} comments", post_path(post) %></small>

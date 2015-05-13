@@ -2,7 +2,7 @@ class CommentsController < ApplicationController
   before_action :require_user
 
   def create
-    @post = Post.find(params[:post_id])
+    @post = Post.find_by(slug: params[:post_id])
     @comment = Comment.new(params.require(:comment).permit(:body))
     @comment.post = @post
     @comment.user = current_user
@@ -16,14 +16,19 @@ class CommentsController < ApplicationController
   end
 
   def vote
-    comment = Comment.find(params[:id])
-    @vote = Vote.create(voteable: comment, vote: params[:vote], user: current_user)
+    @comment = Comment.find(params[:id])
+    @vote = Vote.create(voteable: @comment, vote: params[:vote], user: current_user)
     
-    if @vote.valid?
-      flash[:notice] = "Thanks for your vote!"
-    else
-      flash[:error] = "You already voted for this comment."
-    end  
-    redirect_to :back
+    respond_to do |format|
+      format.html do
+        if @vote.valid?
+          flash[:notice] = "Thanks for your vote!"
+        else
+          flash[:error] = "You already voted for this comment."
+        end  
+        redirect_to :back
+      end
+      format.js
+    end
   end
 end
